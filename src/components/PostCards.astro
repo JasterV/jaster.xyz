@@ -1,0 +1,20 @@
+---
+import PostCard from "../components/PostCard.astro";
+
+const { posts } = Astro.props;
+---
+
+<div class="post-cards">
+  {posts.map((post) => <PostCard post={post} />)}
+</div>
+
+<style>
+  .post-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0rem;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

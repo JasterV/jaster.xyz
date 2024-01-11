@@ -1,0 +1,16 @@
+---
+import LinkButton from "./LinkButton.astro";
+
+const { tags } = Astro.props;
+---
+
+<div class="tags">
+  {tags.map((tag) => <LinkButton href={`/tags/${tag}`} text={tag} />)}
+</div>
+
+<style>
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+  }
+</style>

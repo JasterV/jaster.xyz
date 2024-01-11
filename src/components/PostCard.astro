@@ -1,0 +1,26 @@
+---
+const { post } = Astro.props;
+---
+
+<article class="post-card">
+  <h2>
+    <a href={post.url} rel="bookmark">
+      {post.frontmatter.title}
+    </a>
+  </h2>
+  <p>{post.frontmatter.description}</p>
+  <time datetime={post.frontmatter.pubDate}>
+    {post.frontmatter.pubDate.slice(0, 10)}
+  </time>
+</article>
+
+<style>
+  .post-card {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: start;
+    border: 1px solid var(--text-color);
+    padding: 1rem;
+  }
+</style>

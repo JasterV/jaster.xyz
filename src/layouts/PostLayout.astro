@@ -1,0 +1,47 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Tags from "../components/Tags.astro";
+
+const { frontmatter } = Astro.props;
+---
+
+<BaseLayout title={frontmatter.title}>
+  <article>
+    <header>
+      <time datetime={frontmatter.pubDate}
+        >{frontmatter.pubDate.slice(0, 10)}</time
+      >
+      <p class="description">{frontmatter.description}</p>
+    </header>
+    <img src={frontmatter.image.url} width="200" alt={frontmatter.image.alt} />
+    <main class="post-content">
+      <slot />
+    </main>
+    <footer>
+      <h2>Tags</h2>
+      <Tags tags={frontmatter.tags} />
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    font-style: italic;
+    padding-bottom: 1rem;
+  }
+
+  time {
+    color: var(--text-color-light);
+  }
+
+  footer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2rem;
+    gap: 1rem;
+  }
+</style>
