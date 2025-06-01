@@ -1,6 +1,6 @@
 # jaster.xyz
 
-This is my personal website.
+This repo contains the code of my personal website.
 
 It is build using Astro with very minimal configuration.
 
