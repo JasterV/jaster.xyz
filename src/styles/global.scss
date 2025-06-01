@@ -15,10 +15,9 @@
 }
 
 :root {
-  --base-color: #00141a;
-  --text-color: #fdf6e3;
+  --base-color: #1d1f21;
+  --text-color: white;
   --text-color-light: #657b83;
-  --yellow100: #ffe999;
   --violet300: #9ca0ed;
   --violet100: #cccfff;
   --font-size-m: 20px;
@@ -82,6 +81,8 @@ a:hover {
 
 .expanded {
   display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 @media screen and (min-width: 636px) {

@@ -7,9 +7,7 @@ export interface Image {
 
 export interface Frontmatter {
   title: string;
-  description?: string;
   pubDate: string;
-  tags: string[];
   image?: Image;
 }
 

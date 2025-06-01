@@ -1,12 +1,10 @@
 ---
 layout: ../../layouts/PostLayout.astro
-title: "Hello World"
+title: "First time posting here"
 pubDate: 2024-01-20
-description: "Welcome to my new blog!"
 image:
-  url: "/images/me.png"
+  url: "/src/assets/me.png"
   alt: "Just me hanging out"
-tags: ["blogging", "HelloWorld"]
 ---
 
 So this is my first post in here, I'm quite excited :D

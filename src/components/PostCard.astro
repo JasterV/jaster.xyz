@@ -9,18 +9,26 @@ const { post } = Astro.props;
 ---
 
 <article class="post-card">
+  <time datetime={post.frontmatter.pubDate}>
+    {post.frontmatter.pubDate.slice(0, 10)}
+  </time>
   <h2>
     <a href={post.url} rel="bookmark">
       {post.frontmatter.title}
     </a>
   </h2>
-  <p>{post.frontmatter.description}</p>
-  <time datetime={post.frontmatter.pubDate}>
-    {post.frontmatter.pubDate.slice(0, 10)}
-  </time>
 </article>
 
 <style>
+  time {
+    color: var(--text-color-light);
+    padding-bottom: 1rem;
+  }
+
+  h2 {
+    margin-bottom: 0.5rem;
+  }
+
   .post-card {
     display: flex;
     width: 100%;

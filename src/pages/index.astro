@@ -1,59 +1,46 @@
 ---
 import Layout from "@layouts/BaseLayout.astro";
-
-// Page variables
-const pageTitle = "Hello there!";
+import backgroundImage from "../assets/background-mario.jpg";
 ---
 
-<Layout title={pageTitle}>
+<Layout title="Home" backgroundImage={backgroundImage}>
   <p>
-    I'm Victor Martinez, a Software Developer based in Italy with a passion for
-    computers and solving problems with code. And this is my website :)
+    Hi, I'm Victor Martinez. I'm a Mid Software Developer at Prima
+    Assicurazzioni, an Italian motor insurance company which puts a lot of
+    effort on maintaining a state-of-the-art software department.
   </p>
 
   <br />
 
   <p>
-    I am going to be posting content about my learnings on software design,
-    programming principles, linux and new tools, stay tuned!
+    I currently live in Italy :) I like to spend my time playing bass guitar,
+    bouldering or staying home reading, nothing too exciting. I've created this
+    blog mainly for myself. I'd like to have a safe place where to write about
+    my learnings on software development. I'm making it public because I hope
+    that whatever I write might be useful to someone else :)
   </p>
 
   <br />
 
-  <h2>Interests</h2>
-
-  <ul>
-    <li>
-      Playing bass guitar (I love to go and play in Jam sessions, I'd say is one
-      of my favourite things to do)
-    </li>
-    <li>
-      Messing up with my linux machine and configure my programming environment
-      (I use Nvim btw)
-    </li>
-    <li>Programming in Rust and static-typed languages in general</li>
-  </ul>
+  <p>
+    I've created this blog mainly for myself. I'd like to have a safe place
+    where to write about my learnings on software development. I'm making it
+    public because I hope that whatever I write might be useful to someone else
+    :)
+  </p>
 
   <br />
 
-  <h2>Follow me!</h2>
+  <p>Find me:</p>
 
   <ul>
     <li>
-      <a href="https://github.com/JasterV">Github</a> (Check out my projects in here)
+      <a href="https://github.com/JasterV">Github</a>
     </li>
     <li><a href="https://linkedin.com/in/jaster-victor/">Linkedin</a></li>
   </ul>
 
   <br />
-
-  <h2>RSS Feed</h2>
-
-  <p>
-    Don't miss any updates from my <a href="/blog">Blog</a>. Check out my RSS
-    Feed
-    <a href="/rss.xml">here</a>.
-  </p>
 </Layout>
 
 <style>
