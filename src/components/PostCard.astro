@@ -1,4 +1,10 @@
 ---
+import type { BlogPost } from "../types/BlogPost.ts";
+
+interface Props {
+  post: BlogPost;
+}
+
 const { post } = Astro.props;
 ---
 

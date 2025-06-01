@@ -1,6 +1,11 @@
 ---
+import type { Frontmatter } from "../types/BlogPost.ts";
 import BaseLayout from "./BaseLayout.astro";
-import Tags from "../components/Tags.astro";
+import Tags from "@components/Tags.astro";
+
+interface Props {
+  frontmatter: Frontmatter;
+}
 
 const { frontmatter } = Astro.props;
 ---
@@ -13,7 +18,11 @@ const { frontmatter } = Astro.props;
       >
       <p class="description">{frontmatter.description}</p>
     </header>
-    <img src={frontmatter.image.url} width="200" alt={frontmatter.image.alt} />
+    <img
+      src={frontmatter.image?.url}
+      width="200"
+      alt={frontmatter.image?.alt}
+    />
     <main class="post-content">
       <slot />
     </main>

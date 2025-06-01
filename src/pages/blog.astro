@@ -1,9 +1,10 @@
 ---
-import PostCards from "../components/PostCards.astro";
-import Layout from "../layouts/BaseLayout.astro";
+import type { BlogPost } from "../types/BlogPost.ts";
+import PostCards from "@components/PostCards.astro";
+import Layout from "@layouts/BaseLayout.astro";
 
 const allPosts = Object.values(
-  import.meta.glob("../pages/posts/*.md", { eager: true }),
+  import.meta.glob<BlogPost>("../pages/posts/*.md", { eager: true }),
 );
 
 const pageTitle = "My Blog";

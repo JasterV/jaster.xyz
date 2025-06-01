@@ -1,8 +1,12 @@
 ---
-import Hamburger from "../components/Hamburger.astro";
-import Navigation from "../components/Navigation.astro";
+import Hamburger from "@components/Hamburger.astro";
+import Navigation from "@components/Navigation.astro";
 
-import "../styles/global.scss";
+import "@styles/global.scss";
+
+interface Props {
+  title: string;
+}
 
 const { title } = Astro.props;
 ---
@@ -93,7 +97,7 @@ const { title } = Astro.props;
 </style>
 
 <script>
-  document.querySelector(".hamburger").addEventListener("click", () => {
-    document.querySelector(".nav-links").classList.toggle("expanded");
+  document.querySelector(".hamburger")?.addEventListener("click", () => {
+    document.querySelector(".nav-links")?.classList.toggle("expanded");
   });
 </script>

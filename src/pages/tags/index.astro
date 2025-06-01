@@ -1,9 +1,10 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import Tags from "../../components/Tags.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Tags from "@components/Tags.astro";
+import type { BlogPost } from "../../types/BlogPost.ts";
 
 const allPosts = Object.values(
-  import.meta.glob("../posts/*.md", { eager: true }),
+  import.meta.glob<BlogPost>("../posts/*.md", { eager: true }),
 );
 
 const tags = [...new Set(allPosts.map((post) => post.frontmatter.tags).flat())];

@@ -1,5 +1,10 @@
 ---
-import PostCard from "../components/PostCard.astro";
+import PostCard from "@components/PostCard.astro";
+import type { BlogPost } from "../types/BlogPost.ts";
+
+interface Props {
+  posts: BlogPost[];
+}
 
 const { posts } = Astro.props;
 ---
