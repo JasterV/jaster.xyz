@@ -1,0 +1,25 @@
+name: Run CI checks
+
+on:
+  push:
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+
+    - name: Install bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+      
+    - name: Install dependencies
+      run: |
+        bun install
+
+    - name: Run check
+      run: |
+        bun run check

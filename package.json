@@ -7,7 +7,7 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check",
+    "check": "astro check && prettier ./src --check",
     "format": "prettier ./src --write",
     "astro": "astro"
   },
