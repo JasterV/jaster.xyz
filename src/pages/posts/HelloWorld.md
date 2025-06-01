@@ -3,7 +3,7 @@ layout: ../../layouts/PostLayout.astro
 title: "First time posting here"
 pubDate: 2024-01-20
 image:
-  url: "/src/assets/me.png"
+  url: "/images/me.png"
   alt: "Just me hanging out"
 ---
 
