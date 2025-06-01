@@ -2,7 +2,9 @@
 import PostCards from "../components/PostCards.astro";
 import Layout from "../layouts/BaseLayout.astro";
 
-const allPosts = Object.values(import.meta.glob('../pages/posts/*.md', { eager: true }));
+const allPosts = Object.values(
+  import.meta.glob("../pages/posts/*.md", { eager: true }),
+);
 
 const pageTitle = "My Blog";
 ---
