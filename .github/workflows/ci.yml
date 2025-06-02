@@ -1,7 +1,9 @@
 name: Run CI checks
 
 on:
-  push:
+  pull_request:
+    branches:
+      - "main"
 
 jobs:
   ci:

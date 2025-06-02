@@ -10,6 +10,10 @@ on:
   workflow_dispatch:
 
 jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+    secrets: inherit
+  
   web-deploy:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
@@ -25,11 +29,7 @@ jobs:
     - name: Install dependencies
       run: |
         bun install
-
-    - name: Run check
-      run: |
-        bun run check
-      
+  
     - name: 🔨 Build Project
       run: |
         bun run build
