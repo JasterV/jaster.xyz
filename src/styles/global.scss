@@ -157,33 +157,11 @@ ol {
 }
 
 a {
-  color: var(--violet100);
+  text-decoration: none;
+  color: var(--violet300);
   font-weight: bold;
 }
 
 a:hover {
-  color: var(--violet300);
-}
-
-/* Posts */
-
-.post-content {
-  h1,
-  h2,
-  h3,
-  h4 {
-    margin-top: 1rem;
-  }
-
-  p {
-    margin-top: 0.5rem;
-  }
-
-  li {
-    margin-top: 0.5rem;
-  }
-
-  li > p {
-    display: contents;
-  }
+  color: var(--violet100);
 }

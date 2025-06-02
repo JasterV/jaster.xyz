@@ -41,19 +41,33 @@ const { frontmatter } = Astro.props;
     padding-bottom: 1rem;
   }
 
-  time {
-    color: var(--text-color-light);
-  }
-
   .post-title {
     font-size: 35px;
     padding-bottom: 0.5rem;
   }
 
-  footer {
-    display: flex;
-    flex-direction: column;
-    margin-top: 2rem;
-    gap: 1rem;
+  time {
+    color: var(--text-color-light);
+  }
+
+  .post-content {
+    h1,
+    h2,
+    h3,
+    h4 {
+      margin-top: 2rem;
+    }
+
+    p {
+      margin-top: 0.5rem;
+    }
+
+    li {
+      margin-top: 0.5rem;
+    }
+
+    li > p {
+      display: contents;
+    }
   }
 </style>
