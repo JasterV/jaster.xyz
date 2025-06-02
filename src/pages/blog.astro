@@ -1,14 +1,27 @@
 ---
 import type { BlogPost } from "../types/BlogPost.ts";
-import PostCards from "@components/PostCards.astro";
+import PostCard from "@components/PostCard.astro";
 import Layout from "@layouts/BaseLayout.astro";
-import backgroundImage from "../assets/night.jpg";
+import backgroundImage from "@assets/blog-bg.jpg";
 
-const allPosts = Object.values(
+const posts = Object.values(
   import.meta.glob<BlogPost>("../pages/posts/*.md", { eager: true }),
 );
 ---
 
 <Layout title="Blog" , backgroundImage={backgroundImage}>
-  <PostCards posts={allPosts} />
+  <div class="post-cards">
+    {posts.map((post) => <PostCard post={post} />)}
+  </div>
 </Layout>
+
+<style>
+  .post-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0rem;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

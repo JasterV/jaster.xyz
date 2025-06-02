@@ -1,8 +1,8 @@
 ---
-import Hamburger from "@components/Hamburger.astro";
-import Navigation from "@components/Navigation.astro";
 import type { ImageMetadata } from "astro";
-import { getImage } from "astro:assets";
+import { getImage, Image } from "astro:assets";
+import profileImage from "@assets/profile.jpeg";
+import { Icon } from "astro-icon/components";
 
 import "@styles/global.scss";
 
@@ -13,10 +13,9 @@ interface Props {
 
 const { title, backgroundImage } = Astro.props;
 
-// Optimize for common screen width
-const optimizedImage = await getImage({ src: backgroundImage });
+const optimizedBgImage = await getImage({ src: backgroundImage });
 
-const backgroundImageUrl = `url('${optimizedImage.src}')`;
+const backgroundImageUrl = `url('${optimizedBgImage.src}')`;
 ---
 
 <html lang="en">
@@ -30,19 +29,46 @@ const backgroundImageUrl = `url('${optimizedImage.src}')`;
   <body>
     <div class="wrapper">
       <header>
-        <Hamburger />
-        <Navigation />
+        <div class="profile">
+          <a href="/">
+            <div class="profile-image-wrapper">
+              <Image
+                src={profileImage}
+                alt="profile image"
+                class="profile-image"
+              />
+            </div>
+          </a>
+          <div>
+            <h2>Victor Martinez</h2>
+            <nav>
+              <a href="/">Home</a>
+              <a href="/blog">Blog</a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="social-media">
+          <a href="https://github.com/JasterV">
+            <Icon name="mdi:github" />
+          </a>
+          <a href="https://linkedin.com/in/jaster-victor/">
+            <Icon name="mdi:linkedin" />
+          </a>
+        </div>
       </header>
+
       <main>
         <slot />
       </main>
+
       <footer>
         <p>Built with <a href="https://astro.build/">Astro</a> ♥</p>
         <p>
           Color palette from
-          <a href="https://github.com/craftzdog/solarized-osaka.nvim/">
-            Craftzdog
-          </a>♥
+          <a href="https://github.com/craftzdog/solarized-osaka.nvim/"
+            >Craftzdog</a
+          > ♥
         </p>
         <p>© 2024 Victor Martínez. All Rights Reserved.</p>
       </footer>
@@ -62,12 +88,16 @@ const backgroundImageUrl = `url('${optimizedImage.src}')`;
     font-size: var(--font-size-m);
   }
 
-  header {
+  .wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    width: 80ch;
+    min-height: calc(100vh - 1rem);
+    border: 2px solid white;
+    background: rgba(29, 31, 33, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 2rem 1.5rem;
+    margin: 0.5rem;
   }
 
   main {
@@ -85,26 +115,50 @@ const backgroundImageUrl = `url('${optimizedImage.src}')`;
     gap: 0.5rem;
   }
 
-  .wrapper {
+  header {
     display: flex;
     flex-direction: column;
-    width: 80ch;
-    min-height: calc(100vh - 1rem);
-    border: 2px solid white;
-    background: rgba(29, 31, 33, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 2rem 1.5rem;
-    margin: 0.5rem;
+    gap: 1rem;
+    margin-bottom: 1rem;
   }
 
-  .page-title {
-    font-size: 3rem;
-    text-align: center;
+  .social-media {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  nav {
+    padding-top: 0.3rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .profile {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .profile-image-wrapper {
+    width: 50px;
+    height: 50px;
+    border: 2px solid white;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-image-wrapper:hover {
+    border-color: var(--violet300);
+    cursor: pointer;
+  }
+
+  .profile-image {
+    width: 100%;
+    height: auto;
+    margin-top: -35%;
   }
 </style>
-
-<script>
-  document.querySelector(".hamburger")?.addEventListener("click", () => {
-    document.querySelector(".nav-links")?.classList.toggle("expanded");
-  });
-</script>
