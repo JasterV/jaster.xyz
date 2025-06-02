@@ -4,6 +4,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-Thin.woff2") format("woff2");
   font-weight: 100;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -11,6 +12,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-ThinItalic.woff2") format("woff2");
   font-weight: 100;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Extra light */
@@ -19,6 +21,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-ExtraLight.woff2") format("woff2");
   font-weight: 200;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -27,6 +30,7 @@
     format("woff2");
   font-weight: 200;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Light */
@@ -35,6 +39,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-Light.woff2") format("woff2");
   font-weight: 300;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -42,6 +47,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-LightItalic.woff2") format("woff2");
   font-weight: 300;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Normal */
@@ -50,6 +56,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-Regular.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -57,6 +64,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-Italic.woff2") format("woff2");
   font-weight: normal;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Medium */
@@ -65,6 +73,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -72,6 +81,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-MediumItalic.woff2") format("woff2");
   font-weight: 500;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Semi bold */
@@ -80,6 +90,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-SemiBold.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -88,6 +99,7 @@
     format("woff2");
   font-weight: 600;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Bold */
@@ -97,6 +109,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-Bold.woff2") format("woff2");
   font-weight: bold;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -104,6 +117,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-BoldItalic.woff2") format("woff2");
   font-weight: bold;
   font-style: italic;
+  font-display: swap;
 }
 
 /* Extra Bold */
@@ -112,6 +126,7 @@
   src: url("/fonts/jetbrains/JetBrainsMono-ExtraBold.woff2") format("woff2");
   font-weight: 800;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -120,6 +135,7 @@
     format("woff2");
   font-weight: 800;
   font-style: italic;
+  font-display: swap;
 }
 
 :root {
