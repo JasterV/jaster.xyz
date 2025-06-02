@@ -37,9 +37,11 @@ We skip all of that for the sake of making this very simple, but I think having 
 
 Let's look at a simple diagram.
 
+```d2 title="Door IoT Ws client"
+direction: right
 
-
-Let's look at some code:
+Documentation -> Starlight -> Website: {style.animated: true}
+```
 
 ## Let's get into code
 

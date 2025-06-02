@@ -19,3 +19,6 @@ pnpm-debug.log*
 .env
 .env.production
 
+# Ignore automatic generated diagrams from D2
+public/assets/d2/
+
