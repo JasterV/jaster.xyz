@@ -7,56 +7,80 @@ image: "./assets/elixir.svg"
 
 # TLDR
 
-In this post I'd like to talk about a way to decouple a GenServer in your Elixir application in a way that makes it very easy to test and decouples it completely from the rest of the system.
+In this post I'd like to talk about an interesting way to decouple GenServers from the rest of the system by using a PubSub library.
 
-We will do it by going through a real application I was working with recently (The code is not the same but the concept is).
+We will do it by going through actual code. We will take a look at a regular Elixir application and we will discuss possible problems in it.
 
-I will first present a common Elixir application; including tests and we will discuss the problems with it. (TLDR; Coupling and messy tests).
+We will then use PubSub to refactor the application and we'll discuss the final result, its benefits but also possible downsides.
 
-Then I want to walk you through the process I went to solve these problems and we will discuss the final application, its benefits but also possible downsides.
+## Introduction
 
-## Automating a door
+The project we will look at is very simple.
 
-So the project we will look at is very simple.
+It consists of an IoT application that automates locking and unlocking a door.
 
-It consists of an IoT application that controls a door and waits for messages from a server to lock or unlock the door.
+A user can interact will perhaps interact with our application using some sort of remote control.
+
+Then, when the door gets locked, we want a light to become red and a notification to be sent to us.
+Finally, when the door gets unlocked, we want a light to become green and get notified too.
 
 ### Architecture
 
 The application consists of:
 
-- A Websocket client that listens for `lock`/`unlock` messages from a server and sends back a `locked` or `unlocked` message after the operations have succeeded.
-  In case of an error it will send an error message so the caller knows something is wrong.
-  We will not consider timeouts in here, just to make it as simple as possible.
-
 - A GenServer that manages the state of the Door and is responsible for locking or unlocking it.
+- A GenServer that manages the state of the lights and is responsible for changing colors.
+- A GenServer that manages notifications.
 
-It is important to note that we are implementing a Websocket client, not server.
-In this case we imagine there is a central server that is responsible for keeping track of the state of multiple doors in the house, and that there are users that can tell the server "lock door A".
-We skip all of that for the sake of making this very simple, but I think having more context is important.
+Let's look at a diagram of the whole system first:
 
-Let's look at a simple diagram.
+<div align="center">
 
-```d2 title="Door IoT Ws client"
-direction: right
+```d2 width="500" theme=303 title="Lock door flow"
+direction: down
 
-Documentation -> Starlight -> Website: {style.animated: true}
+user {
+  shape: c4-person
+}
+
+firmware {
+  door_server: Door Server
+  light_server: Light Server
+  notifications_server: Notifications Server
+
+  label.near: bottom-left
+}
+
+third_party_notifications_service: 3rd party notifications service {
+  shape: cloud
+}
+
+hardware: {
+  shape: rectangle
+}
+
+user -> firmware.door_server: lock door {style.animated: true}
+firmware.door_server -> firmware.light_server: set_lights_red {style.animated: true}
+firmware.door_server -> firmware.notifications_server: send_notification {style.animated: true}
+firmware.door_server -> hardware: lock {style.animated: true}
+firmware.light_server -> hardware: set_lights_red {style.animated: true}
+firmware.notifications_server -> third_party_notifications_service: send_notification {style.animated: true}
 ```
+</div>
+
+In this post we will focus on the firmware layer, more specifically in the Door server, its implementation and tests.
 
 ## Let's get into code
 
-### Websocket client
-
 ### Door GenServer
 
-## Let's write some tests
+### Let's write some tests
 
-## What is going on here?
+## What is wrong here?
 
 Possible problems:
 
-- Duplication of test setup
-- The door tests having to call the websocket client to know if the event is sent via the websocket
+- Coupling
 
 ## How can we improve it?
 
