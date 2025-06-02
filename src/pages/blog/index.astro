@@ -4,7 +4,7 @@ import backgroundImage from "@assets/blog-bg.jpg";
 import { type CollectionEntry, getCollection } from "astro:content";
 import FormattedDate from "@components/FormattedDate.astro";
 
-type PostEntry = CollectionEntry<"Blog">;
+type PostEntry = CollectionEntry<"blog">;
 
 const posts: PostEntry[] = await getCollection("blog");
 
@@ -13,7 +13,7 @@ const sortedPosts = posts.sort(
 );
 ---
 
-<Layout title="Blog" , backgroundImage={backgroundImage}>
+<Layout title="Blog" backgroundImage={backgroundImage}>
   <div class="post-cards">
     {
       sortedPosts.map((post) => (

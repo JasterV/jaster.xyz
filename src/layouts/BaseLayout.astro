@@ -1,20 +1,16 @@
 ---
 import type { ImageMetadata } from "astro";
-import { getImage, Image } from "astro:assets";
-import profileImage from "@assets/profile.jpeg";
-import { Icon } from "astro-icon/components";
-
+import { getImage } from "astro:assets";
+import Header from "@components/Header.astro";
 import "@styles/global.scss";
 
 interface Props {
-  title?: string;
+  title: string;
   backgroundImage: ImageMetadata;
 }
 
 const { title, backgroundImage } = Astro.props;
-
 const optimizedBgImage = await getImage({ src: backgroundImage });
-
 const backgroundImageUrl = `url('${optimizedBgImage.src}')`;
 ---
 
@@ -28,38 +24,7 @@ const backgroundImageUrl = `url('${optimizedBgImage.src}')`;
   </head>
   <body>
     <div class="wrapper">
-      <header>
-        <nav>
-          <span>|</span>
-          <a href="/">Home</a>
-          <span>|</span>
-          <a href="/blog">Blog</a>
-          <span>|</span>
-
-          <a href="https://github.com/JasterV">
-            <Icon size="1.5rem" name="mdi:github" />
-          </a>
-          <a href="https://linkedin.com/in/jaster-victor/">
-            <Icon size="1.5rem" name="mdi:linkedin" />
-          </a>
-        </nav>
-
-        <div class="profile">
-          <a href="/">
-            <div class="profile-image-wrapper">
-              <Image
-                src={profileImage}
-                alt="profile image"
-                class="profile-image"
-              />
-            </div>
-          </a>
-          <div>
-            <h2>Victor Martinez</h2>
-            <p class="description">/* Be a catalyst for change */</p>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main>
         <slot />
@@ -117,61 +82,5 @@ const backgroundImageUrl = `url('${optimizedBgImage.src}')`;
     padding-top: 1rem;
     margin-top: auto;
     gap: 0.5rem;
-  }
-
-  .description {
-    color: var(--text-color-light);
-    font-size: 0.9rem;
-    padding-top: 0.25rem;
-  }
-
-  nav {
-    padding-top: 0.3rem;
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
-  }
-
-  .profile {
-    display: flex;
-    flex-direction: row;
-    gap: 1.5rem;
-    align-items: start;
-  }
-
-  .profile-image-wrapper {
-    width: 50px;
-    height: 50px;
-    border: 2px solid white;
-    border-radius: 50%;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .profile-image-wrapper:hover {
-    border-color: var(--violet300);
-    cursor: pointer;
-  }
-
-  .profile-image {
-    width: 100%;
-    height: auto;
-    margin-top: -35%;
-  }
-
-  header {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  @media screen and (min-width: 636px) {
-    header {
-      flex-direction: row-reverse;
-      align-items: start;
-      justify-content: space-between;
-      gap: 0.25rem;
-    }
   }
 </style>
