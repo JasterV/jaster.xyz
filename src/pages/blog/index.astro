@@ -1,0 +1,66 @@
+---
+import Layout from "@layouts/BaseLayout.astro";
+import backgroundImage from "@assets/blog-bg.jpg";
+import { type CollectionEntry, getCollection } from "astro:content";
+import FormattedDate from "@components/FormattedDate.astro";
+
+type PostEntry = CollectionEntry<"Blog">;
+
+const posts: PostEntry[] = await getCollection("blog");
+
+const sortedPosts = posts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<Layout title="Blog" , backgroundImage={backgroundImage}>
+  <div class="post-cards">
+    {
+      sortedPosts.map((post) => (
+        <article class="post-card">
+          <div class="date">
+            <FormattedDate date={post.data.pubDate} />
+          </div>
+          <h2>
+            <a href={`/blog/${post.id}`} rel="bookmark">
+              {post.data.title}
+            </a>
+          </h2>
+        </article>
+      ))
+    }
+  </div>
+</Layout>
+
+<style>
+  .post-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .post-card {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: start;
+    border: 1px solid var(--text-color);
+    padding: 1rem;
+  }
+
+  .date {
+    color: var(--text-color-light);
+    padding-bottom: 1rem;
+  }
+
+  h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  a {
+    text-decoration: none;
+  }
+</style>

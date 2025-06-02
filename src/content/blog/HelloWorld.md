@@ -1,10 +1,7 @@
 ---
-layout: ../../layouts/PostLayout.astro
 title: "First time posting here"
 pubDate: 2024-01-20
-image:
-  url: "/images/me.png"
-  alt: "Just me hanging out"
+image: "./assets/me.png"
 ---
 
 So this is my first post in here, I'm quite excited :D

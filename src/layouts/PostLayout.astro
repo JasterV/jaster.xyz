@@ -1,28 +1,24 @@
 ---
-import type { Frontmatter } from "../types/BlogPost.ts";
+import { type CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
 import backgroundImage from "@assets/blog-bg.jpg";
+import FormattedDate from "@components/FormattedDate.astro";
+import { Image } from "astro:assets";
 
-interface Props {
-  frontmatter: Frontmatter;
-}
+type Props = CollectionEntry<"blog">["data"];
 
-const { frontmatter } = Astro.props;
+const { title, pubDate, image } = Astro.props;
 ---
 
 <BaseLayout backgroundImage={backgroundImage}>
   <article>
     <header>
-      <img
-        src={frontmatter.image?.url}
-        width="90"
-        alt={frontmatter.image?.alt}
-      />
+      <Image src={image} width="90" alt="Header pic" />
       <div>
-        <h1 class="post-title">{frontmatter.title}</h1>
-        <time datetime={frontmatter.pubDate}
-          >{frontmatter.pubDate.slice(0, 10)}</time
-        >
+        <h1 class="post-title">{title}</h1>
+        <div class="date">
+          <FormattedDate date={pubDate} />
+        </div>
       </div>
     </header>
     <main class="post-content">
@@ -46,7 +42,7 @@ const { frontmatter } = Astro.props;
     padding-bottom: 0.5rem;
   }
 
-  time {
+  .date {
     color: var(--text-color-light);
   }
 
