@@ -46,24 +46,12 @@ const { title, pubDate, image } = Astro.props;
     color: var(--text-color-light);
   }
 
+  /* Revert the changes made by the global styles */
+  /* So markdown can be spaced as the markdown processor says */
   .post-content {
-    h1,
-    h2,
-    h3,
-    h4 {
-      margin-top: 2rem;
-    }
-
-    p {
-      margin-top: 0.5rem;
-    }
-
-    li {
-      margin-top: 0.5rem;
-    }
-
-    li > p {
-      display: contents;
+    * {
+      margin: revert;
+      padding: revert;
     }
   }
 </style>
