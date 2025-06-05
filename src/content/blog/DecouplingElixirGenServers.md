@@ -224,6 +224,55 @@ Then, if a module that is interested on those events can simply subscribe to the
 
 This automatically makes our application more flexible, testable and maintainable.
 
+Let's look at a diagram of the new target architecture:
+
+
+<div class="diagram" align="center">
+
+```d2 width="500" theme=303 title="event-driven architecture diagram"
+direction: down
+
+user {
+  shape: c4-person
+}
+
+firmware {
+  door_server: DoorServer
+  lights: Lights
+  notifications: Notifications
+
+  door_topic: Door events topic {
+    shape: queue
+  }
+
+  label.near: bottom-left
+}
+
+third_party_notifications_service: 3rd party notifications service {
+  shape: cloud
+}
+
+hardware: {
+  shape: rectangle
+}
+
+user -> firmware.door_server: lock door {style.animated: true}
+
+firmware.door_server -> firmware.door_topic: door_locked {style.animated: true}
+
+firmware.door_topic -> firmware.lights: door_locked {style.animated: true}
+
+firmware.door_topic -> firmware.notifications: door_locked {style.animated: true}
+
+firmware.door_server -> hardware: lock {style.animated: true}
+
+firmware.lights -> hardware: set_lights_red {style.animated: true}
+
+firmware.notifications -> third_party_notifications_service: send_notification {style.animated: true}
+```
+
+</div>
+
 ## Introducing Phoenix PubSub
 
 [Phoenix PubSub](https://github.com/phoenixframework/phoenix_pubsub) is a known Elixir library that comes with the Phoenix framework.
