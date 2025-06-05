@@ -490,7 +490,7 @@ There are some drawbacks though:
 
 - Debugging becomes harder.
 
-  - You are introducing an extra of asynchronous broadcast messaging and therefore your elixir processes become harder to debug.
+  - You are introducing an extra layer of asynchronous broadcast messaging and therefore your elixir processes become harder to debug.
 
 - Event delivery is not ensured.
 
