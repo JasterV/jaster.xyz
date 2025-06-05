@@ -178,6 +178,10 @@ a:hover {
 }
 
 /* Fix responsiveness issues with code blocks */
+.astro-code {
+  padding: 0.75rem !important;
+}
+
 .astro-code code {
   display: block;
   width: 0;

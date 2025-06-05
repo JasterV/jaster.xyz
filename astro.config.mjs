@@ -8,7 +8,7 @@ export default defineConfig({
   site: "https://jaster.xyz",
   markdown: {
     shikiConfig: {
-      theme: "dracula",
+      theme: "solarized-dark",
       wrap: false,
     },
   },
