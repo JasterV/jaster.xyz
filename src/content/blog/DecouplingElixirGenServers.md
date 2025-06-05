@@ -220,7 +220,7 @@ We can make the DoorServer publish an event whenever the doors are successfully 
 
 Imagine if we had some sort of dedicated mailbox for our door events that any processes can subscribe to.
 
-Then, if a module that is interested on those events can simply subscribe to them and implement their own handlers.
+Then, a module interested on those events can simply subscribe to them and implement their own handlers.
 
 This automatically makes our application more flexible, testable and maintainable.
 
