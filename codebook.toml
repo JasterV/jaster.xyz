@@ -1,1 +1,4 @@
-words = ["astro"]
+words = [
+    "astro",
+    "neovim",
+]
