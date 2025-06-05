@@ -32,7 +32,7 @@ The application consists of:
 
 Let's look at a diagram of the whole system first:
 
-<div align="center">
+<div class="diagram" align="center">
 
 ```d2 width="500" theme=303 title="Lock door flow"
 direction: down

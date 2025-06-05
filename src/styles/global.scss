@@ -177,9 +177,15 @@ a:hover {
   color: var(--link-hover-color);
 }
 
-/* Fix responsiveness issues */
+/* Fix responsiveness issues with code blocks */
 .astro-code code {
   display: block;
   width: 0;
   font-size: 16px;
+}
+
+/* Fix responsiveness issues with generated diagrams */
+.diagram img {
+  max-width: 100% !important;
+  height: auto !important;
 }
