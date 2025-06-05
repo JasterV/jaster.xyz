@@ -457,4 +457,7 @@ So as with every software pattern, depending on the requirements of your system 
 
 In my case, my application didn't require side effects to be performed in order nor it was a problem if an event was lost because a process was down.
 
-This is the first ever post that I publish online, I hope someone finds it useful, thanks for the read!
+This is the first ever post that I publish online, I hope someone finds it useful.
+If you have any doubts or feedback you can contact me via email, you can find it at the top of the page :)
+
+Thank you for your time!

@@ -11,7 +11,7 @@ export default defineConfig({
       include: {
         // Include only three `mdi` icons in the bundle
         // Otherwise, Astro Icons could include every single icon in the mdi package and result in a huge bundle size
-        mdi: ["github", "linkedin"],
+        mdi: ["github", "linkedin", "alternate-email"],
       },
     }),
     sitemap(),
