@@ -139,11 +139,10 @@
 }
 
 :root {
-  --base-color: #1d1f21;
   --text-color: white;
   --text-color-light: #657b83;
-  --violet300: #9ca0ed;
-  --violet100: #cccfff;
+  --link-color: #9ca0ed;
+  --link-hover-color: #cccfff;
   --font-size-m: 18px;
 }
 
@@ -165,19 +164,28 @@ a {
 }
 
 ul {
-  list-style: square inside none;
-}
-
-ol {
-  list-style-position: inside;
+  list-style: square;
 }
 
 a {
   text-decoration: none;
-  color: var(--violet300);
+  color: var(--link-color);
   font-weight: bold;
 }
 
 a:hover {
-  color: var(--violet100);
+  color: var(--link-hover-color);
+}
+
+/* Fix responsiveness issues with code blocks */
+.astro-code code {
+  display: block;
+  width: 0;
+  font-size: 16px;
+}
+
+/* Fix responsiveness issues with generated diagrams */
+.diagram img {
+  max-width: 100% !important;
+  height: auto !important;
 }
