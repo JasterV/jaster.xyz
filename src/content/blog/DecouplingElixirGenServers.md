@@ -1,6 +1,6 @@
 ---
 title: "Decoupling Elixir GenServers with Phoenix PubSub"
-description: "A way to make our Genservers more easy to test and maintain by using PubSub"
+description: "A way to make our GenServers more easy to test and maintain by using PubSub"
 pubDate: 2025-06-02
 image: "./assets/elixir.svg"
 ---
@@ -199,7 +199,7 @@ Coupling these modules spreads complexity that should be isolated.
 
 ### Coupling in tests
 
-Coupling doesn't stop in the DoorServer module, it get's propagated into our tests.
+Coupling doesn't stop in the DoorServer module, it gets propagated into our tests.
 
 Because our `lock` and `unlock` functions cause a series of side effects, we find ourselves having to add extra setup to test them.
 
@@ -229,9 +229,9 @@ This automatically makes our application more flexible, testable and maintainabl
 
 It is a generic PubSub library which enables us to implement a publish-subscribe pattern in our Elixir applications.
 
-It supports distribution by default (pusblishing and subscribing between erlang nodes) and multiple backends including Redis.
+It supports distribution by default (publishing and subscribing between erlang nodes) and multiple backends including Redis.
 
-Eventhough it explicitly says it is made for the Phoenix framework, it doesn't have any phoenix-related dependencies and can be used on its own.
+Even-though it explicitly says it is made for the Phoenix framework, it doesn't have any phoenix-related dependencies and can be used on its own.
 
 Also we know Phoenix has been battle tested, so we can be sure Phoenix PubSub too!
 
