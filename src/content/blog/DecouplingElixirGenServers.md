@@ -1,7 +1,7 @@
 ---
 title: "Decoupling Elixir GenServers with Phoenix PubSub"
 description: "A way to make our GenServers more easy to test and maintain by using PubSub"
-pubDate: 2025-06-02
+pubDate: 2025-06-05
 image: "./assets/elixir.svg"
 ---
 
