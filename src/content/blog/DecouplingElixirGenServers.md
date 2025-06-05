@@ -276,7 +276,7 @@ firmware.notifications -> third_party_notifications_service: send_notification {
 
 [Phoenix PubSub](https://github.com/phoenixframework/phoenix_pubsub) is a known Elixir library that comes with the Phoenix framework.
 
-It is a generic PubSub library which enables us to implement a publish-subscribe pattern in our Elixir applications.
+It is a generic PubSub library that enables us to implement a publish-subscribe pattern in our Elixir applications.
 
 It supports distribution by default (publishing and subscribing between erlang nodes) and multiple backends including Redis.
 
