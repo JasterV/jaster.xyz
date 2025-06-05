@@ -26,6 +26,7 @@ const sortedPosts = posts.sort(
               {post.data.title}
             </a>
           </h2>
+          {post.data.description && <p>{post.data.description}</p>}
         </article>
       ))
     }
