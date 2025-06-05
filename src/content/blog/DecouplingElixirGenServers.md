@@ -26,7 +26,7 @@ Finally, when the door gets unlocked, we want a light to become green and get no
 
 The application consists of:
 
-- A GenServer that manages the state of the Door and is responsible for locking or unlocking it.
+- A GenServer that manages the state of the door and is responsible for locking or unlocking it.
 - A module that manages the state of the lights and is responsible for changing colors.
 - A module that manages notifications.
 
@@ -67,7 +67,7 @@ firmware.notifications -> third_party_notifications_service: send_notification {
 
 </div>
 
-In this post we will focus on the firmware layer, more specifically in the Door server, its implementation and tests.
+In this post we will focus on the firmware layer, more specifically in the DoorServer, its implementation and tests.
 
 ## Let's get into code
 
@@ -131,7 +131,7 @@ defmodule DoorAutomation.DoorServer do
 end
 ```
 
-For the purpose of this article, the underlying calls that the Door Server would need to make to the Hardware are left out of the code.
+For the purpose of this article, the underlying calls that the DoorServer would need to make to the Hardware are left out of the code.
 
 ### Let's write some tests
 
@@ -194,7 +194,7 @@ In this case, if a user locks the door but the lights don't work or the notifica
 
 Ideally, any issues that might occur related to the lights or notifications system should be handled in their own modules.
 
-Our door server should simply worry about locking or unlocking a door.
+The DoorServer should simply worry about locking or unlocking a door.
 
 Coupling these modules spreads complexity that should be isolated.
 
@@ -210,7 +210,7 @@ Each time we add a new side effect that doesn't necessarily have to do with lock
 
 ## So, what can we do?
 
-We want to find a way to decouple our door server from the rest of the system and protect it from unrelated issues.
+We want to find a way to decouple the DoorServer from the rest of the system and protect it from unrelated issues.
 
 I'm sure there are many ways you could do this, but in this article I want to talk about a specific one I recently deployed to production with success.
 
@@ -225,7 +225,6 @@ Then, if a module that is interested on those events can simply subscribe to the
 This automatically makes our application more flexible, testable and maintainable.
 
 Let's look at a diagram of the new target architecture:
-
 
 <div class="diagram" align="center">
 
