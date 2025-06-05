@@ -186,7 +186,7 @@ With that said, let's talk about some possible issues we could run into.
 
 Following the previous design, we are coupling the DoorServer implementation with the lights and notifications modules.
 
-The lights module might rely hardware which could fail at any time (perhaps the circuits break) and the notifications module might rely on a network to send messages.
+The lights module might rely on hardware which could fail at any time (perhaps the circuits break) and the notifications module might rely on a network to send messages.
 
 If the lights are faulty or the network goes down, the door could potentially stop working and the user wouldn't be able to lock or unlock it anymore.
 
