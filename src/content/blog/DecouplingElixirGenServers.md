@@ -422,7 +422,6 @@ defmodule DoorAutomation.DoorServerTest do
 
   test "locking the door changes state and publishes :door_locked event" do
     assert :ok = DoorServer.lock()
-
     assert DoorServer.get_state() == :locked
     assert_receive :door_locked
     refute_receive :door_unlocked
@@ -431,7 +430,6 @@ defmodule DoorAutomation.DoorServerTest do
 
   test "unlocking the door changes state and publishes :door_unlocked event" do
     assert :ok = DoorServer.unlock()
-
     assert DoorServer.get_state() == :unlocked
     assert_receive :door_unlocked
     refute_receive :door_locked
