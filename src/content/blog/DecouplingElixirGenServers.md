@@ -64,6 +64,7 @@ firmware.door_server -> hardware: lock {style.animated: true}
 firmware.lights -> hardware: set_lights_red {style.animated: true}
 firmware.notifications -> third_party_notifications_service: send_notification {style.animated: true}
 ```
+
 </div>
 
 In this post we will focus on the firmware layer, more specifically in the Door server, its implementation and tests.
@@ -298,7 +299,7 @@ defmodule DoorAutomation.DoorServer do
 
     {:reply, :unlocked, @unlocked_state}
   end
-end  
+end
 ```
 
 I'd like to also show how to write a subscriber for the lights module to react to pub sub events.
@@ -333,7 +334,7 @@ defmodule DoorAutomation.LightsSubscriber do
 
   @impl true
   def handle_info(:door_locked, state) do
-    :ok = DoorAutomation.Lights.set_red() 
+    :ok = DoorAutomation.Lights.set_red()
     Phoenix.PubSub.broadcast(DoorAutomation.PubSub, @lights_topic, :lights_set_red)
     {:noreply, state}
   end
@@ -344,7 +345,7 @@ defmodule DoorAutomation.LightsSubscriber do
     Phoenix.PubSub.broadcast(DoorAutomation.PubSub, @lights_topic, :lights_set_green)
     {:noreply, state}
   end
-end  
+end
 ```
 
 As a note, some people might prefer publishing the light events from inside the Lights module,
@@ -442,9 +443,11 @@ We've also seen how tests become simpler due to the fact that each test suite be
 There are some drawbacks though:
 
 - Debugging becomes harder.
+
   - You are introducing an extra of asynchronous broadcast messaging and therefore your elixir processes become harder to debug.
 
 - Event delivery is not ensured.
+
   - If a subscriber goes down, Phoenix PubSub won't try to re-deliver lost events once the process restarts.
   - Depending on your situation you might want to implement a more complex pub-sub system that does its best to ensure event delivery.
 
