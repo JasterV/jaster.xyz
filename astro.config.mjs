@@ -6,6 +6,12 @@ import d2 from "astro-d2";
 // https://astro.build/config
 export default defineConfig({
   site: "https://jaster.xyz",
+  markdown: {
+    shikiConfig: {
+      theme: "dracula",
+      wrap: false,
+    },
+  },
   integrations: [
     icon({
       include: {
