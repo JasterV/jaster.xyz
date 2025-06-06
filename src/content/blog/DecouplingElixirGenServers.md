@@ -447,7 +447,6 @@ defmodule DoorAutomation.LightsSubscriberTest do
   alias DoorAutomation.DoorServer
   alias Phoenix.PubSub
 
-  # Setup block that runs before each test
   setup do
     :ok = PubSub.subscribe(DoorAutomation.PubSub, LightsSubscriber.events_topic())
 
