@@ -148,14 +148,201 @@ concurrent and read-write safe hashmap.
 
 If you try to perform a write operation while in the same scope you are holding a read reference to it, the DashMap will silently deadlock instead of panicking or returning an error.
 
-// TODO: Put an example
+```rust
+{
+    let topic = map.get(topic_name).unwrap();
+    // This will cause a deadlock!
+    let _ = map.remove(topic_name);
+}    
+```
 
 #### Redefining RcMap
 
+Now the definition of the RcMap should look like this
+
+```rust
+pub struct RcMap<K, V> {
+    inner: Arc<DashMap<K, (isize, V)>>,
+}
+```
+
 #### Defining `ObjectRef`
+
+Now that we know exactly the purpose of an `ObjectRef`, let's get into the implementation:
+
+```rust
+#[derive(Debug)]
+pub struct ObjectRef<K, V>
+where
+    K: Hash + Eq,
+{
+    parent_ref: Weak<DashMap<K, (isize, V)>>,
+    key: K,
+    value: V,
+}
+```
+
+If you are not familiar with it, `Weak` is a version of Arc that holds a non-owning reference to the data.
+A `Weak` pointer can be created from an `Arc` "downgrading" it (see [documentation](https://doc.rust-lang.org/std/sync/struct.Arc.html#method.downgrade)) and it will not increase the reference count when creating it.
+This way, the `RcMap` is kept as the real owner of the `Arc` instead of the `ObjectRef`s.
 
 #### Implementing the drop behavior
 
+Now we can get into the real deal, how to automatically clean up map entries!
+
+```rust
+impl<K, V> Drop for ObjectRef<K, V>
+where
+    K: Hash + Eq,
+{
+    fn drop(&mut self) {
+        let Some(map) = self.parent_ref.upgrade() else {
+            return;
+        };
+
+        map.alter(&self.key, |_, (count, value)| (count - 1, value));
+        map.remove_if(&self.key, |_, (count, _)| *count <= 0);
+    }
+}
+```
+
+The implementation is fairly simple as the `DashMap` API offers a pleasantly clean way of altering and removing values.
+
+First we need to [upgrade](https://doc.rust-lang.org/std/sync/struct.Weak.html#method.upgrade) the weak reference to an `Arc`.
+
+If the value was already dropped, it will return none and we will do nothing.
+
+If the original map is not yet dropped we can then update it.
+
+Now we see the sense of storing also the `key` in the object ref, as we can use it inside the `drop` implementation to update the inner map.
+
+So, first we decrease the reference count by 1.
+
+Then, if the `count` is equal or less than 0 we simply remove the entry, easy!
+
 #### Reimplementing RcMap
 
+Now we have an object which we can use to return whenever someone wants to get a value, and we know that this object
+will take care of deallocating map entries "on-drop".
+
+Let's see how to reimplement our `RcMap` to take advantage of the DashMap and `ObjectRef`.
+
+```rust
+impl<K, V> RcMap<K, V>
+where
+    K: Hash + Eq + Clone + Debug,
+    V: Clone,
+{
+    pub fn new() -> Self {
+        Self {
+            inner: Arc::new(DashMap::new()),
+        }
+    }
+
+    pub fn get(&self, key: K) -> Option<ObjectRef<K, V>> {
+        self.inner
+            .alter(&key, |_, (count, value)| (count + 1, value));
+
+        let Some(value_ref) = self.inner.get(&key) else {
+            return None;
+        };
+
+        let (_count, value) = value_ref.value();
+
+        Some(ObjectRef {
+            key,
+            parent_ref: Arc::downgrade(&self.inner),
+            value: value.clone(),
+        })
+    }
+
+
+    pub fn insert(&self, key: K, value: V) -> Result<ObjectRef<K, V>, InsertError<K, V>> {
+        if let Some(object_ref) = self.get(key.clone()) {
+            return Err(InsertError::AlreadyExists(key, object_ref));
+        }
+
+        let _prev = self.inner.insert(key.clone(), (1, value.clone()));
+
+        Ok(ObjectRef {
+            key,
+            parent_ref: Arc::downgrade(&self.inner),
+            value,
+        })
+    }
+}
+```
+
+The implementation looks quite self-explanatory to me, but there are a few things to point here.
+
+First, both the key and value need to be "clone-able",  and that makes sense because we need to clone these values from the inner map into the `ObjectRef`.
+
+We could perhaps use `Arc` to wrap both the key and the value to not enforce them to implement Clone, but I was not sure about it so this has simply been an implementation detail I've left this way.
+
+Second, we see that the `insert` function returns an `InsertError::AlreadyExists` error if the program tries to insert an entry with a key that already exists.
+
+This is the definition of the error type:
+
+```rust
+#[derive(thiserror::Error, Debug)]
+pub enum InsertError<K, V>
+where
+    K: Hash + Eq + Debug,
+{
+    #[error(
+        "An entry already exists with the given key: '{0:?}'. You must wait until all existing object references are dropped for the pair to be removed."
+    )]
+    AlreadyExists(K, ObjectRef<K, V>),
+}  
+```
+
+This check is done because for consistency reasons an entry must only be removed by the last `ObjectRef` being dropped.
+
+Otherwise, there could exist unrelated old `ObjectRef` instances modifying the reference count of the new inserted entry.
+
+To prevent this from happening, we enforce that to be able to insert an entry with an already existing key,
+one must wait until all `ObjectRef`s pointing to the current entry are dropped.
+
+Then, you can see how we return an `ObjectRef` containing the already existing entry along with the error.
+
+This is not necessary but it can come in handy when working with `RcMap`.
+
+## Usage example
+
+```rust
+let map = RcMap::new();
+
+{
+    let inserted_ref = map
+        .insert("potatoe", "chair")
+        .expect("No entry should exist");
+
+    let obj_ref = map
+        .get("potatoe")
+        .expect("This entry exists");
+
+    // All refs are dropped, the entry is removed
+}
+
+let obj_ref = map.get("potatoe");
+
+assert!(obj_ref.is_none());
+```
+
+The example above should give a clear idea of how to use our `RcMap` :)
+
 #### Conclusions
+
+It has been a very interesting journey to learn how to implement such a data structure.
+
+We've learned about a thread-safe hash map called `DashMap` which combined with an `Arc` gives automatically to our `RcMap` the power of being safe to be shared and used among threads.
+
+We've also learned about `Weak`, and how to use it to safely keep non-owning references to data that could or could not exist.
+
+I know that it could be more feature complete with operations such as `remove` or `alter`, the last one probably being more complex as we might decide to also alter all `ObjectRef`s pointing to that entry.
+
+I kept the implementation as simple as I could to serve the purpose needed in my [event_bus.rs](https://github.com/JasterV/event_bus.rs) crate.
+
+On a later post I want to talk about this crate and how to use an `RcMap` to implement an `EventBus` in a very simple way.
+
+If you got here I can't thank you enough! I hope you enjoyed, stay tuned!
