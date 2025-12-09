@@ -1,8 +1,8 @@
 ---
 title: "Implementing a reference-count map in Rust"
 description: "A reference-count map is a data structure that keeps track of how many references to an entry exist and drops it when the last reference drops."
-pubDate: 2025-12-03
-image: "./assets/elixir.svg"
+pubDate: 2025-12-09
+image: "./assets/wizard.png"
 ---
 
 I came up with the term Reference Count Map for a map-like data structure that uses a reference counting system to know when to automatically clean up an entry.
