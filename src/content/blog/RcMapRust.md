@@ -5,11 +5,9 @@ pubDate: 2025-12-09
 image: "./assets/wizard.png"
 ---
 
-I came up with the term Reference Count Map for a map-like data structure that uses a reference counting system to know when to automatically clean up an entry.
+I came up with the term `reference-count map` for a map data structure that uses a reference counting system to know when to automatically clean up an entry.
 
-The term is not officially registered by me and I am not aware whether someone has already come up with it for an already common and settled data structure.
-
-In this post I'd like to share how did I implement such a data structure in Rust.
+In this post I'd like to share how I implemented such a data structure in Rust.
 
 It is going to be very simple and could for sure be improved and contain more features but I wanted to keep it simple for my own needs.
 
@@ -21,24 +19,22 @@ I wanted to experiment with the idea of implementing an `Event bus` in Rust.
 
 Lately I've been working a lot with Elixir and the popular library Phoenix PubSub.
 
-This library offers a very simple API which allows developers to simply call `PubSub.subscribe(topic_name)` function to subscribe to a topic
-and `PubSub.publish(topic_name, data)` to publish data to it.
+This library offers a very simple API which allows developers to simply call `PubSub.subscribe(topic_name)` to subscribe to a topic and `PubSub.publish(topic_name, data)` to publish to it.
 
 I wanted to implement a type that provided the same API in Rust, with the same friendly user experience that `Phoenix PubSub` provides to Elixir developers.
 
 I wanted this `Event Bus` to internally manage the allocation and deallocation of `topics` in a way that users will never have to worry about it.
 
-So I needed a way to create `topics` on the fly anytime that a process subscribes to them and to be able to automatically clean them up from memory
-as soon as all the subscribers exit.
+So I needed a way to create `topics` on the fly anytime that a process subscribed to them and to clean them up from memory as soon as all the subscribers are dropped.
 
-Here I identified a pattern that could be encapsulated in a data structure, one that was able to keep track of how many references to an entry exist and that
-somehow was able to also keep track of references getting dropped from memory.
+Here I identified a pattern that could be encapsulated as a data structure, one that would be able to keep track of how many references to an entry exist and that
+somehow would be able to also react to references getting dropped from memory.
 
-This is how the idea of creating what I named a `reference-counting map` came to life!
+This is how the idea of creating what I named a `reference-count map` came to life!
 
-## Let's get into it!
+## Designing our data structure
 
-Let's go step by step, I will try to drive you through the same thought process I went through.
+Let's go step by step, I will try to drive you through the same thought process I had.
 
 First of all, we need to store key-value pairs on a map, so let's start defining our `RcMap`:
 
@@ -48,7 +44,7 @@ pub struct RcMap<K, V> {
 }
 ```
 
-Now we need a way to keep track of how many references exist. Let's keep it simple, we'll just update the map to include a counter along with the stored value:
+Now we need a way to keep track of how many references exist. Let's keep it simple, we will update the map to include a counter along with the stored value:
 
 ```rust
 pub struct RcMap<K, V> {
@@ -56,12 +52,12 @@ pub struct RcMap<K, V> {
 }
 ```
 
-Let's start implementing the basics we can think of right now:
+Let's implement the basic functionality we can think of right now:
 
 ```rust
 impl<K, V> RcMap<K, V>
 where
-    K: Hash + Eq + Debug,
+    K: Hash + Eq,
     V: Clone,
 {
     pub fn new() -> Self {
@@ -82,34 +78,33 @@ where
         }
     }
 
-    pub fn insert(&mut self, key: K, value: V) {
-        let _ = self.inner.insert(key, (1, value));
+    pub fn insert(&mut self, key: K, value: V) -> V {
+        let _ = self.inner.insert(key, (1, value.clone()));
+        value
     }
 }
 ```
 
-First the obvious:
+What are we doing here:
 
-- When inserting a new key-value pair we will insert it with a reference count of 1.
+- When inserting a new key-value pair we insert it with a reference count of 1 and return it.
 
 - Whenever we fetch an entry, we increment the reference count by 1.
 
-But now a few problems arise:
-
-- When inserting a pair, the reference count should automatically go down to 0 because after it completes no one is holding a reference to it!
+But there is a problem:
 
 - When we get a value we increment the reference counter, but how will the counter be decremented? How can we track that the value that was fetched gets dropped?
 
 ### Implementing the `ObjectRef`
 
-We need a way to encapsulate the values we return to the caller in a way that when they get dropped, 2 things happen:
+We need a way to encapsulate the values we return to the caller in a way that when they get dropped, two things happen:
 
 - The reference count gets decremented by 1.
 - If the count hits 0, we clean up the entry from the map.
 
-I decided to call this "wrapper" `ObjectRef`, which sounded generic enough to me to be a valid name.
+To implement this behavior I created a type named `ObjectRef`, which sounds generic enough to me for its purpose.
 
-The mentioned behavior of an `ObjectRef` naturally implies that it will need write access to the internal map stored by `RcMap`.
+The mentioned behavior of an `ObjectRef` naturally implies that it will need write access to the internal hashmap.
 
 To be able to do that, we need 2 things:
 
@@ -123,20 +118,19 @@ For an experienced Rustacean this pattern will probably sound familiar... and ex
 Arc<RwLock<HashMap<_, _>>>
 ```
 
-As you might know an `Arc` allows us to share the ownership of a value in a read-only way (no mutable references are allowed).
+As you might know, an `Arc` allows us to share the ownership of a value in a read-only way (no mutable references are allowed).
 
 A `RwLock` is a concurrency primitive that allows us to hold a write lock to a value so we are sure that the map can only be updated from 1 place at a time.
 
-Most importantly, `RwLock` implements the internal mutability pattern, which means that we can mutate the internal value (while holding the write lock) without taking a mutable reference to the `RwLock`.
+Most importantly, `RwLock` implements an internal mutability pattern, which means that we can mutate the internal value (while holding the write lock) without taking a mutable reference to it.
 
-This is important because this means that thanks to the combination of `Arc` and `RwLock`, the 2 conditions we mentioned previously are met!
+This is important because thanks to the combination of `Arc` and `RwLock`, the 2 conditions we've mentioned are met!
 
 #### Using DashMap instead of `RwLock<HashMap<K, V>>`
 
 The need to have a thread-safe map that allows users to safely read/write entries from multiple places at a time is a very common pattern in Rust.
 
-Some time ago I learned about the [DashMap](https://docs.rs/dashmap/latest/dashmap/struct.DashMap.html), a concurrent hashmap
-which primary goal is to be a direct replacement for `RwLock<HashMap<K, V>>`!
+Some time ago I learned about [DashMap](https://docs.rs/dashmap/latest/dashmap/struct.DashMap.html), a concurrent hashmap which primary goal is to be a direct replacement for `RwLock<HashMap<K, V>>`!
 
 When working with a `DashMap` you don't have to worry about asking for a `write` lock and handle cases such as the internal lock being `poisoned`,
 all of the synchronization is handled internally and the API that is offered to you is very simple and friendly while still getting all the benefits of a fully
@@ -146,7 +140,7 @@ concurrent and read-write safe hashmap.
 
 `DashMap`s are awesome but you still need to know how to use them properly!
 
-If you try to perform a write operation while in the same scope you are holding a read reference to it, the DashMap will silently deadlock instead of panicking or returning an error.
+If you try to perform a write operation while holding a read reference, your `DashMap` will silently deadlock instead of panicking or returning an error.
 
 ```rust
 {
@@ -158,7 +152,7 @@ If you try to perform a write operation while in the same scope you are holding 
 
 #### Redefining RcMap
 
-Now the definition of the RcMap should look like this
+Now the definition of our `RcMap` should look like this:
 
 ```rust
 pub struct RcMap<K, V> {
@@ -168,10 +162,9 @@ pub struct RcMap<K, V> {
 
 #### Defining `ObjectRef`
 
-Now that we know exactly the purpose of an `ObjectRef`, let's get into the implementation:
+Now that we know the purpose of an `ObjectRef`, let's get into the internals:
 
 ```rust
-#[derive(Debug)]
 pub struct ObjectRef<K, V>
 where
     K: Hash + Eq,
@@ -183,7 +176,7 @@ where
 ```
 
 If you are not familiar with it, `Weak` is a version of Arc that holds a non-owning reference to the data.
-A `Weak` pointer can be created from an `Arc` "downgrading" it (see [documentation](https://doc.rust-lang.org/std/sync/struct.Arc.html#method.downgrade)) and it will not increase the reference count when creating it.
+A `Weak` pointer can be created from an `Arc` "downgrading" it (see [documentation](https://doc.rust-lang.org/std/sync/struct.Arc.html#method.downgrade)) and it will not increase the reference count.
 This way, the `RcMap` is kept as the real owner of the `Arc` instead of the `ObjectRef`s.
 
 #### Implementing the drop behavior
@@ -210,11 +203,11 @@ The implementation is fairly simple as the `DashMap` API offers a pleasantly cle
 
 First we need to [upgrade](https://doc.rust-lang.org/std/sync/struct.Weak.html#method.upgrade) the weak reference to an `Arc`.
 
-If the value was already dropped, it will return none and we will do nothing.
-
-If the original map is not yet dropped we can then update it.
-
 Now we see the sense of storing also the `key` in the object ref, as we can use it inside the `drop` implementation to update the inner map.
+
+If the value was already dropped, it will return none and it won't do anything.
+
+If the original map is not yet dropped, it can be updated.
 
 So, first we decrease the reference count by 1.
 
@@ -222,15 +215,14 @@ Then, if the `count` is equal or less than 0 we simply remove the entry, easy!
 
 #### Reimplementing RcMap
 
-Now we have an object which we can use to return whenever someone wants to get a value, and we know that this object
-will take care of deallocating map entries "on-drop".
+Now we have an object which we can use to return whenever someone wants to get a value, and we know that this object will take care of deallocating map entries "on-drop".
 
-Let's see how to reimplement our `RcMap` to take advantage of the DashMap and `ObjectRef`.
+Let's see how to reimplement our `RcMap` to take advantage of `DashMap` and `ObjectRef`.
 
 ```rust
 impl<K, V> RcMap<K, V>
 where
-    K: Hash + Eq + Clone + Debug,
+    K: Hash + Eq + Clone,
     V: Clone,
 {
     pub fn new() -> Self {
@@ -284,21 +276,17 @@ Second, we see that the `insert` function returns an `InsertError::AlreadyExists
 This is the definition of the error type:
 
 ```rust
-#[derive(thiserror::Error, Debug)]
 pub enum InsertError<K, V>
 where
-    K: Hash + Eq + Debug,
+    K: Hash + Eq,
 {
-    #[error(
-        "An entry already exists with the given key: '{0:?}'. You must wait until all existing object references are dropped for the pair to be removed."
-    )]
     AlreadyExists(K, ObjectRef<K, V>),
 }  
 ```
 
-This check is done because for consistency reasons an entry must only be removed by the last `ObjectRef` being dropped.
+This check is done for consistency reasons, because an entry must only be removed by the last `ObjectRef` being dropped.
 
-Otherwise, there could exist unrelated old `ObjectRef` instances modifying the reference count of the new inserted entry.
+Otherwise there could be unrelated old `ObjectRef` instances modifying the reference count of a new inserted entry.
 
 To prevent this from happening, we enforce that to be able to insert an entry with an already existing key,
 one must wait until all `ObjectRef`s pointing to the current entry are dropped.
@@ -314,17 +302,17 @@ let map = RcMap::new();
 
 {
     let inserted_ref = map
-        .insert("potatoe", "chair")
+        .insert("potato", "chair")
         .expect("No entry should exist");
 
     let obj_ref = map
-        .get("potatoe")
+        .get("potato")
         .expect("This entry exists");
 
     // All refs are dropped, the entry is removed
 }
 
-let obj_ref = map.get("potatoe");
+let obj_ref = map.get("potato");
 
 assert!(obj_ref.is_none());
 ```
@@ -335,14 +323,14 @@ The example above should give a clear idea of how to use our `RcMap` :)
 
 It has been a very interesting journey to learn how to implement such a data structure.
 
-We've learned about a thread-safe hash map called `DashMap` which combined with an `Arc` gives automatically to our `RcMap` the power of being safe to be shared and used among threads.
+We've learned about a thread-safe hash map called `DashMap` which combined with an `Arc` gives thread-safe superpowers to our `RcMap`.
 
-We've also learned about `Weak`, and how to use it to safely keep non-owning references to data that could or could not exist.
+We've also learned about `Weak` and how to use it to safely keep non-owning references to data that could or could not exist.
 
-I know that it could be more feature complete with operations such as `remove` or `alter`, the last one probably being more complex as we might decide to also alter all `ObjectRef`s pointing to that entry.
+I know that it could be more feature complete with operations such as `remove` or `alter`, the last one probably being more complex as we might decide to also alter all `ObjectRef`s pointing to an entry.
 
-I kept the implementation as simple as I could to serve the purpose needed in my [event_bus.rs](https://github.com/JasterV/event_bus.rs) crate.
+I kept the implementation as simple as I could to serve the needs of the [event_bus.rs](https://github.com/JasterV/event_bus.rs) crate.
 
 On a later post I want to talk about this crate and how to use an `RcMap` to implement an `EventBus` in a very simple way.
 
-If you got here I can't thank you enough! I hope you enjoyed, stay tuned!
+If you got here I can't thank you enough, I hope you enjoyed and stay tuned!
