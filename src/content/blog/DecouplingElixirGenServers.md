@@ -488,11 +488,9 @@ We've also seen how tests become simpler due to the fact that each test suite be
 There are some drawbacks though:
 
 - Debugging becomes harder.
-
   - You are introducing an extra layer of asynchronous broadcast messaging and therefore your elixir processes become harder to debug.
 
 - Event delivery is not ensured.
-
   - If a subscriber goes down, Phoenix PubSub won't try to re-deliver lost events once the process restarts.
   - Depending on your situation you might want to implement a more complex pub-sub system that does its best to ensure event delivery.
 

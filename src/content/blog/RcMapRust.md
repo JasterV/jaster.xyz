@@ -147,7 +147,7 @@ If you try to perform a write operation while holding a read reference, your `Da
     let topic = map.get(topic_name).unwrap();
     // This will cause a deadlock!
     let _ = map.remove(topic_name);
-}    
+}
 ```
 
 #### Redefining RcMap
@@ -267,7 +267,7 @@ where
 
 The implementation looks quite self-explanatory to me, but there are a few things to point here.
 
-First, both the key and value need to be "clone-able",  and that makes sense because we need to clone these values from the inner map into the `ObjectRef`.
+First, both the key and value need to be "clone-able", and that makes sense because we need to clone these values from the inner map into the `ObjectRef`.
 
 We could perhaps use `Arc` to wrap both the key and the value to not enforce them to implement Clone, but I was not sure about it so this has simply been an implementation detail I've left this way.
 
@@ -281,7 +281,7 @@ where
     K: Hash + Eq,
 {
     AlreadyExists(K, ObjectRef<K, V>),
-}  
+}
 ```
 
 This check is done for consistency reasons, because an entry must only be removed by the last `ObjectRef` being dropped.
