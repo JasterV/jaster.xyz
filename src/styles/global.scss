@@ -143,6 +143,7 @@
   --text-color-light: #657b83;
   --link-color: #9ca0ed;
   --link-hover-color: #cccfff;
+  --inline-code-color: #49a8f5;
   --font-size-m: 18px;
 }
 
@@ -186,6 +187,12 @@ a:hover {
   display: block;
   width: 0;
   font-size: 16px;
+}
+
+p > code {
+  font-style: italic;
+  font-weight: bold;
+  color: var(--inline-code-color);
 }
 
 /* Fix responsiveness issues with generated diagrams */
