@@ -1,4 +1,4 @@
-⚠️ # THIS REPO HAS BEEN MIGRATED TO CODEBERG ⚠️
+# ⚠️ THIS REPO HAS BEEN MIGRATED ⚠️
 
 Mainly for philosofic reasons I've decided to migrate all my projects to a free software alternative forge ([Codeberg](https://codeberg.org/)).
 
